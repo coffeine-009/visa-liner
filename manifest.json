@@ -5,9 +5,13 @@
   "description": "Registration for getting visa.",
   "version": "1.0",
 
+  "icons": {
+    "256": "icon.png"
+  },
+
   "background": {
     "scripts": [
-      "background.js"
+      "assets/js/app.js"
     ]
   },
 
@@ -20,6 +24,28 @@
 //        "jquery.js",
         "content.js"
       ]
+    },
+    //- Set flag: "I am not bot" -//
+    {
+      "js": [
+        "assets/js/app/view/captcha/google/captcha-start.js"
+      ],
+      "matches": [
+//        "http://www.polandvisa-ukraine.com/scheduleappointment_2.html"
+//        "https://polandonline.vfsglobal.com/poland-ukraine-appointment/*"
+        "https://www.google.com/recaptcha/api2/anchor*"
+      ],
+      "all_frames":true
+    },
+    //- Answer -//
+    {
+      "js": [
+        "assets/js/app/view/captcha/google/captcha-finish.js"
+      ],
+      "matches": [
+        "https://www.google.com/recaptcha/api2/frame*"
+      ],
+      "all_frames":true
     }
   ],
 

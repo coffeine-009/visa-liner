@@ -28,7 +28,20 @@ window.addEventListener('DOMContentLoaded', function () {
                 from: 'popup-init',
                 msg: 'Give config.'
             },
-            (info) => {alert(info);}
+            (config) => {
+                interval.value = config.interval / 1000;
+            }
+        );
+
+        // ...and send a request for the DOM info...
+        chrome.tabs.sendMessage(
+            tabs[0].id,
+            {
+                type: 'recaptcha-finish',
+                images: [
+                    2, 4, 8
+                ]
+            }
         );
     });
 
