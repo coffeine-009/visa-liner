@@ -7,7 +7,9 @@
  */
 
 //- Get configuration -//
-var config = {};
+var config = {
+    pages: {}
+};
 chrome.storage.sync.get('config', (items) => {
     config = JSON.parse(items.config);
 });
@@ -15,6 +17,22 @@ chrome.storage.sync.get('config', (items) => {
 window.addEventListener('DOMContentLoaded', function () {
 
     var interval = document.getElementById( 'interval' );
+    var pageNewUri = document.getElementById( 'page-new' );
+    var action = document.getElementById( 'action-el' );
+
+    pageNewUri.addEventListener('change', function() {
+        var uri = pageNewUri.value;
+        config.pages[ uri ] = {
+            uri: uri,
+            //- Actions per page -//
+            actions: []
+        };
+        alert(uri);
+    });
+
+    action.addEventListener( 'change', function() {
+        //TODO: add action
+    });
 
     // ...query for the active tab...
     chrome.tabs.query({
