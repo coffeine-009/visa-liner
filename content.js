@@ -115,6 +115,7 @@ class CaptchaAction extends Action {
             var res = xhr.response.split('|');
             if (res[0] == 'OK') {
                 getElementByXpath( this.resultEl ).value = res[1];
+                getElementByXpath( '//*[@id="ctl00_cp1_btnNext_input"]' ).click();
             }
         };
         xhr.open('GET', 'https://rucaptcha.com/res.php?key=e9f4eff94ef0123abc325e8ead5545a1&action=get&id=' + id);

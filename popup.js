@@ -21,13 +21,14 @@ function renderPage( el ) {
 }
 
 function renderActions( el, uri ) {
-    var actionsContent = '<tr><th>Type</th><th>el</th><th>Step</th><th>Result el</th></tr>';
+    var actionsContent = '<tr><th>Type</th><th>el</th><th>Step</th><th>Result el</th><th>Delay</th></tr>';
     config.pages[ uri ].actions.forEach( (action) => {
         actionsContent += '<tr>'
             + '<td>' + action.name + '</td>'
             + '<td>' + action.el + '</td>'
             + '<td><input type="number" style="width: 25px;" value="' + action.step + '"/></td>'
             + '<td>' + action.elResult + '</td>'
+            + '<td>' + action.delay + '</td>'
             + '</tr>';
     });
     el.innerHTML = actionsContent;
