@@ -6,6 +6,15 @@
       .form-group {
         margin: 15px;
       }
+        .form-group label {
+          width: 60px;
+          float: left;
+        }
+
+        .form-group .form-input {
+          display: inline-block;
+          margin-left: 60px;
+        }
     </style>
 
     <script src = "popup.js"></script>
@@ -21,33 +30,35 @@
       <form>
         <div class = "form-group">
           <label>URL:</label>
-          <input type = "url" value = "https://visapoint.eu" disabled = "disabled">
+          <input type = "url" class = "form-input" value = "https://visapoint.eu" disabled = "disabled">
         </div>
         <div class = "form-group">
           <label>Interval(s):</label>
-          <input id = "interval" type = "number" value = "60">
+          <input id = "interval" class = "form-input" type = "number" value = "60">
         </div>
 
         <!-- Page -->
         <div class = "form-group">
           <label>Page:</label>
-          <select id = "page"></select>
+          <select id = "page" class = "form-input"></select>
         </div>
         <div class = "form-group">
-          <label>Add a new page:</label>
-          <input id = "page-new" type = "text" placeholder = "URI of page"/>
+          <label>Add page:</label>
+          <input id = "page-new" class = "form-input" type = "text" placeholder = "URI of page"/>
         </div>
 
         <div class = "form-group">
           <label>Add action:</label>
-          <select id = "action-type">
-            <option value = "click">Click</option>
-            <option value = "captcha">Captcha</option>
-          </select>
-          <input id = "action-el" type = "text" placeholder = "XPath for element"/>
+          <div class = "form-input">
+            <input id = "action-el" type = "text" placeholder = "XPath for element"/>
+            <select id = "action-type">
+              <option value = "click">Click</option>
+              <option value = "captcha">Captcha</option>
+            </select>
+          </div>
         </div>
 
-        <table id = "actions"></table>
+        <table id = "actions" width = "750" border="1" cellpadding="5"></table>
 
         </div>
 

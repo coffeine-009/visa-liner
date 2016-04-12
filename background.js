@@ -234,87 +234,106 @@ var config = null;
  */
 chrome.storage.sync.get('config', (items) => {
     //- Get configuration -//
-    config = JSON.parse(items.config);
+    try {
+        config = JSON.parse( items.config );
+    } catch( e ) {
+        config = {
+            interval: 3600,
+
+            pages: {
+                "/disclaimer": {
+                    uri: '/disclaimer',
+                    currentStep: 0,
+                    //- Actions per page -//
+                    actions: [
+                        {
+                            name: 'click',
+                            el: "//*[@id=\"ctl00_cp1_btnAccept_input\"]",
+                            step: 1
+                        }
+                    ]
+                },
+                "/action": {
+                    uri: '/action',
+                    currentStep: 0,
+                    //- Actions per page -//
+                    actions: [
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_btnNewAppointment_input"]',
+                            step: 1
+                        }
+                    ]
+                },
+                "/form": {
+                    uri: '/disclaimer',
+                    currentStep: 0,
+                    //- Actions per page -//
+                    actions: [
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]',
+                            step: 1
+                        },
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[22]',
+                            step: 1
+                        },
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddVisaType_Arrow"]',
+                            step: 2
+                        },
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddVisaType_DropDown"]/div/ul/li[4]',
+                            step: 2
+                        },
+                        {
+                            name: 'captcha',
+                            el: '//*[@id="c_pages_form_cp1_captcha1_CaptchaImage"]',
+                            elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]',
+                            step: 3
+                        },
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_btnNext_input"]',
+                            delay : 40000,
+                            step: 3
+                        }
+                    ]
+                },
+                "/finish-check": {//FIXME: set correct uri
+                    currentStep: 0,
+                    actions: [
+                        {
+                            name: 'check',
+                            el: '//*[@id="cp1_rblDate"]',
+                            step: 1
+                        }
+                    ]
+                },
+                "/finish": {
+                    currentStep: 0,
+                    actions: [
+                        {
+                            name: 'future-click',
+                            el: '//*[@id="ctl00_cp1_btnPrev_input"]',
+                            step: 1,
+                            timeout: 3600
+                        }
+                    ]
+                }
+            }
+        };
+        console.info( 'Cannot read config.' );
+    }
 
     chrome.storage.onChanged.addListener((changes, area) => {
         config = JSON.parse(changes.config.newValue);
         console.info('Config reloaded.');
     });
-
-    config = {
-        interval: 3600,
-
-        pages: {
-            "/disclaimer": {
-                uri: '/disclaimer',
-                //- Actions per page -//
-                actions: [
-                    {
-                        name: 'click',
-                        el: "//*[@id=\"ctl00_cp1_btnAccept_input\"]"
-                    }
-                ]
-            },
-            "/action": {
-                uri: '/disclaimer',
-                //- Actions per page -//
-                actions: [
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_btnNewAppointment_input"]'
-                    }
-                ]
-            },
-            "/form": {
-                uri: '/disclaimer',
-                //- Actions per page -//
-                actions: [
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]'
-                    },
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[22]'
-                    },
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]'
-                    },
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_ddVisaType_DropDown"]/div/ul/li[4]'
-                    },
-                    {
-                        name: 'captcha',
-                        el: '//*[@id="c_pages_form_cp1_captcha1_CaptchaImage"]',
-                        elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]'
-                    },
-                    {
-                        name: 'click',
-                        el: '//*[@id="ctl00_cp1_btnNext_input"]'
-                    }
-                ]
-            },
-            "/finish-check": {//FIXME: set correct uri
-                actions: [
-                    {
-                        name: 'check',
-                        el: '//*[@id="cp1_rblDate"]'
-                    }
-                ]
-            },
-            "/finish": {
-                actions: [
-                    {
-                        name: 'future-click',
-                        el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                        timeout: config.interval
-                    }
-                ]
-            }
-        }
-    };
 });
 
 chrome.runtime.onMessage.addListener(function (msg, sender, response) {
@@ -328,11 +347,14 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
                 currentWindow: true
             }, function ( tabs ) {
                 // ...and send a request for the DOM info...
+                var page = config.pages[ msg.uri ];
+                    page.currentStep++;
+
                 chrome.tabs.sendMessage(
                     tabs[0].id,
                     {
                         type: 'page',
-                        page: config.pages[ msg.uri ]
+                        page: page
                     }
                 );
             });
@@ -354,10 +376,6 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
     }
     // First, validate the message's structure
     if ((msg.from === 'content')) {
-        // Enable the page-action for the requesting tab
-        chrome.storage.sync.set({'config': JSON.stringify(msg.msg)}, function () {
-            // Notify that we saved.
-            console.info('Settings saved');
-        });
+
     }
 });

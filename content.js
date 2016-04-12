@@ -48,9 +48,10 @@ class Action {
      * @param el    DOM element.
      * @param val   Value.
      */
-    constructor(el, val) {
+    constructor(el, val, delay) {
         this.el = el;
         this.val = val;
+        this.delay = delay;
     }
 
     get value() {
@@ -58,14 +59,18 @@ class Action {
     }
 
     doIt() {
-        this.el.click();
+        setTimeout(() => {
+            this.el.click();
+        }, this.delay);
     };
 }
 
 class ClickAction extends Action {
 
     doIt() {
-        getElementByXpath( this.el ).click();
+        setTimeout(() => {
+            getElementByXpath( this.el ).click();
+        }, this.delay);
     }
 }
 
@@ -77,6 +82,12 @@ class SelectAction extends Action {
 }
 
 class CaptchaAction extends Action {
+
+    constructor(el, resultEl) {
+        super(el);
+
+        this.resultEl = resultEl;
+    }
 
     doIt() {
         toDataUrl(getElementByXpath( this.el ).src, (data) => { this.recognize(data); });
@@ -103,8 +114,7 @@ class CaptchaAction extends Action {
             }
             var res = xhr.response.split('|');
             if (res[0] == 'OK') {
-                getElementByXpath('//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]').value = res[1];
-                document.getElementById('ctl00_cp1_btnNext_input').click();
+                getElementByXpath( this.resultEl ).value = res[1];
             }
         };
         xhr.open('GET', 'https://rucaptcha.com/res.php?key=e9f4eff94ef0123abc325e8ead5545a1&action=get&id=' + id);
@@ -149,12 +159,16 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         case 'page':
             var actions = [];
             msg.page.actions.forEach( (action) => {
+                //- Skip extra steps -//
+                if (msg.page.currentStep != action.step)
+                    return;
+
                 switch (action.name) {
                     case 'click':
-                        actions.push( new ClickAction( action.el ) );
+                        actions.push( new ClickAction( action.el, null, action.delay || 0 ) );
                         break;
                     case 'captcha':
-                        actions.push( new CaptchaAction( action.el ) );
+                        actions.push( new CaptchaAction( action.el, action.elResult ) );
                         break;
                 }
 
@@ -171,10 +185,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
             from:   'content',
             msg:    msg.msg
         });
-    }
-
-    if (msg.from === 'popup-init') {
-        response(config);
     }
 });
 
