@@ -74,10 +74,14 @@ class ClickAction extends Action {
     }
 }
 
-class SelectAction extends Action {
+class CheckAction extends Action {
 
     doIt() {
-        this.el.value = this.val;
+        if ( !getElementByXpath( this.el ) ) {
+            chrome.runtime.sendMessage({
+                type:   'congratulations'
+            });
+        }
     }
 }
 
@@ -98,7 +102,9 @@ class CaptchaAction extends Action {
         xhr.onload = () => {
             var res = xhr.response.split('|');
             if (res[0] == 'OK') {
-                this.parse(res[1]);
+                setTimeout(() => {
+                    this.parse(res[1]);
+                }, 15000);
             }
             console.log(xhr.response);
         };
@@ -170,6 +176,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
                         break;
                     case 'captcha':
                         actions.push( new CaptchaAction( action.el, action.elResult ) );
+                        break;
+                    case 'check':
+                        actions.push( new CheckAction( action.el ) );
                         break;
                 }
 

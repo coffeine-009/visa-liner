@@ -99,32 +99,22 @@ window.addEventListener('DOMContentLoaded', function () {
                                 elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]',
                                 step: 3
                             },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_btnNext_input"]',
-                                delay : 40000,
-                                step: 4
-                            }
-                        ]
-                    },
-                    "/finish-check": {//FIXME: set correct uri
-                        currentStep: 0,
-                        actions: [
+                            // {
+                            //     name: 'click',
+                            //     el: '//*[@id="ctl00_cp1_btnNext_input"]',
+                            //     delay : 25000,
+                            //     step: 3
+                            // }
                             {
                                 name: 'check',
-                                el: '//*[@id="cp1_rblDate"]',
-                                step: 1
-                            }
-                        ]
-                    },
-                    "/finish": {
-                        currentStep: 0,
-                        actions: [
+                                el: '//*[@id="cp1_lblNoDates"]',
+                                step: 4
+                            },
                             {
-                                name: 'future-click',
+                                name: 'click',
                                 el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                                step: 1,
-                                timeout: 3600
+                                step: 4,
+                                delay: 60000
                             }
                         ]
                     }
