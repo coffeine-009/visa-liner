@@ -1,9 +1,9 @@
 /**
- * Copyright (c) 2014-2016, Coffeine Inc
+ * Copyright (c) 2014-2016, Coffeine, Inc
  *
  * @author <a href = "mailto:vitaliyacm@gmail.com">Vitaliy Tsutsman</a>
  *
- * @date 11:32 PM
+ * @date 04/08/2016 11:32 PM
  */
 
 
@@ -38,6 +38,9 @@ class Action {
         this._next = next;
     }
 
+    /**
+     * Do the next action in chain if it exists.
+     */
     doIt() {
         if (this.next) {
             this.next.doIt();
@@ -45,22 +48,38 @@ class Action {
     };
 }
 
+/**
+ * Click action on element by XPath.
+ *
+ * @version 1.0
+ */
 class ClickAction extends Action {
 
+    /**
+     * Do it for click action.
+     */
     doIt() {
         setTimeout(() => {
             var el = getElementByXpath( this.el );
             if (el)
                 el.click();
-            console.info('Click', el);
 
             super.doIt();
         }, this.delay);
     }
 }
 
+/**
+ * Check action.
+ * Check if element exists.
+ *
+ * @version 1.0
+ */
 class CheckAction extends Action {
 
+    /**
+     * Do check.
+     */
     doIt() {
         setTimeout(() => {
             if ( !getElementByXpath( this.el ) ) {
@@ -68,28 +87,41 @@ class CheckAction extends Action {
                     type: 'congratulations'
                 } );
             }
-            console.info('Check', this.el);
+
             super.doIt();
         }, this.delay);
     }
 }
 
+/**
+ * Captcha action.
+ * Recognize captcha and answer.
+ *
+ * @version 1.0
+ */
 class CaptchaAction extends Action {
 
+    /**
+     * Create a new captcha action.
+     *
+     * @param el        Element(img) with captcha image.
+     * @param resultEl  Element for answer.
+     */
     constructor(el, resultEl) {
         super(el);
 
         this.resultEl = resultEl;
     }
 
+    /**
+     * Do recognision.
+     */
     doIt() {
         var el = getElementByXpath( this.el );
         if (el)
             toDataUrl(el.src, ( data) => { this.recognize(data); });
         else
             super.doIt();
-
-        console.info('Captcha', this.el);
     }
 
     recognize(data) {
@@ -146,7 +178,10 @@ function toDataUrl(url, callback){
 }
 
 
-//- Entry point -//
+/**
+ * Entry point.
+ * Every time when page is loaded call background script for next action.
+ */
 chrome.runtime.sendMessage({
     type:   'actions.next',
     //- Get uri -//
@@ -154,7 +189,7 @@ chrome.runtime.sendMessage({
 });
 
 /**
- * Translation messages for storing configuration.
+ * Listen to background script for getting list of actions.
  */
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
@@ -181,15 +216,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
             actions.doIt();
             break;
-    }
-
-    // First, validate the message's structure
-    if (msg.from === 'popup') {
-        // Enable the page-action for the requesting tab
-        chrome.runtime.sendMessage({
-            from:   'content',
-            msg:    msg.msg
-        });
     }
 });
 

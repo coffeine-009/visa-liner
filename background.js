@@ -1,9 +1,9 @@
 /**
- * Copyright (c) 2014-2016, Coffeine Inc
+ * Copyright (c) 2014-2016, Coffeine, Inc
  *
  * @author <a href = "mailto:vitaliyacm@gmail.com">Vitaliy Tsutsman</a>
  *
- * @date 11:32 PM
+ * @date 04/08/2016 11:32 PM
  */
 
 
@@ -19,7 +19,7 @@ chrome.storage.sync.get('config', (items) => {
         config = JSON.parse( items.config );
     } catch( e ) {
         config = {
-            interval: 3600,
+            interval: 3600000,
 
             pages: {
                 "/disclaimer": {
@@ -61,6 +61,14 @@ chrome.storage.sync.get('config', (items) => {
                         },
                         {
                             name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddEmbassy_Arrow"]'
+                        },
+                        {
+                            name: 'click',
+                            el: '//*[@id="ctl00_cp1_ddEmbassy_DropDown"]/div/ul/li[2]'
+                        },
+                        {
+                            name: 'click',
                             el: '//*[@id="ctl00_cp1_ddVisaType_Arrow"]'
                         },
                         {
@@ -84,18 +92,23 @@ chrome.storage.sync.get('config', (items) => {
                         {
                             name: 'click',
                             el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                            delay: 60000
+                            delay: 3600000
                         }
                     ]
                 }
             }
         };
         console.info( 'Cannot read config.' );
+
+        chrome.storage.sync.set({'config': JSON.stringify(config)}, () => {
+            // Notify that we saved.
+            console.info('Settings saved');
+        });
     }
 
     chrome.storage.onChanged.addListener((changes, area) => {
         config = JSON.parse(changes.config.newValue);
-        console.info('Config reloaded.');
+        console.info('Config reloaded.', config);
     });
 });
 
@@ -133,9 +146,5 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
             var yourSound = new Audio('notification.mp3');
             yourSound.play();
             break;
-    }
-    // First, validate the message's structure
-    if ((msg.from === 'content')) {
-
     }
 });

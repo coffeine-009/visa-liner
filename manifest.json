@@ -5,6 +5,10 @@
   "description": "Registration for getting visa.",
   "version": "1.0",
 
+  "icons": {
+    "256": "icon.png"
+  },
+
   "background": {
     "scripts": [
       "background.js"
@@ -14,10 +18,10 @@
   "content_scripts": [
     {
       "all_frames": true,
-      "matches": ["https://visapoint.eu/*"],
-//      "css": ["mystyles.css"],
+      "matches": [
+        "https://visapoint.eu/*"
+      ],
       "js": [
-//        "jquery.js",
         "content.js"
       ]
     }

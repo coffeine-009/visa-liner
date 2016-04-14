@@ -1,9 +1,9 @@
 /**
- * Copyright (c) 2014-2016, Coffeine Inc
+ * Copyright (c) 2014-2016, Coffeine, Inc
  *
  * @author <a href = "mailto:vitaliyacm@gmail.com">Vitaliy Tsutsman</a>
  *
- * @date 3:45 PM
+ * @date 04/08/2016 3:45 PM
  */
 
 //- Get configuration -//
@@ -40,79 +40,7 @@ window.addEventListener('DOMContentLoaded', function () {
         try {
             config = JSON.parse( items.config );
         } catch (e) {
-            config = {
-                interval: 3600,
-
-                pages: {
-                    "/disclaimer": {
-                        uri: '/disclaimer',
-                        currentStep: 0,
-                        //- Actions per page -//
-                        actions: [
-                            {
-                                name: 'click',
-                                el: "//*[@id=\"ctl00_cp1_btnAccept_input\"]",
-                                step: 1
-                            }
-                        ]
-                    },
-                    "/action": {
-                        uri: '/action',
-                        currentStep: 0,
-                        //- Actions per page -//
-                        actions: [
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_btnNewAppointment_input"]',
-                                step: 1
-                            }
-                        ]
-                    },
-                    "/form": {
-                        uri: '/disclaimer',
-                        currentStep: 0,
-                        //- Actions per page -//
-                        actions: [
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]'
-                            },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[22]'
-                            },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddVisaType_Arrow"]'
-                            },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddVisaType_DropDown"]/div/ul/li[4]'
-                            },
-                            {
-                                name: 'captcha',
-                                el: '//*[@id="c_pages_form_cp1_captcha1_CaptchaImage"]',
-                                elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]'
-                            },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_btnNext_input"]'
-                            },
-                            {
-                                name: 'check',
-                                el: '//*[@id="cp1_lblNoDates"]',
-                                delay: 5000
-                            },
-                            {
-                                name: 'click',
-                                el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                                delay: 60000
-                            }
-                        ]
-                    }
-                }
-            };
-            console.warn( 'Cannot load config.' );
+            console.error( 'Cannot load config.' );
         }
 
         var interval = document.getElementById( 'interval' );
@@ -122,6 +50,7 @@ window.addEventListener('DOMContentLoaded', function () {
         var actionType = document.getElementById( 'action-type' );
         var actions = document.getElementById( 'actions' );
 
+        interval.value = config.interval / 1000;
         renderPage( page );
         renderActions( actions, page.value );
 
@@ -153,6 +82,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById( 'save' ).onclick = function() {
             config.interval = interval.value * 1000;
+            config.pages[ '/form' ].actions[ 9 ].delay = interval.value * 1000;
 
             // Enable the page-action for the requesting tab
             chrome.storage.sync.set({'config': JSON.stringify(config)}, function () {
