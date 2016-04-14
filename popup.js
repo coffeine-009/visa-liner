@@ -75,45 +75,37 @@ window.addEventListener('DOMContentLoaded', function () {
                         actions: [
                             {
                                 name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]',
-                                step: 1
+                                el: '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]'
                             },
                             {
                                 name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[22]',
-                                step: 1
+                                el: '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[22]'
                             },
                             {
                                 name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddVisaType_Arrow"]',
-                                step: 2
+                                el: '//*[@id="ctl00_cp1_ddVisaType_Arrow"]'
                             },
                             {
                                 name: 'click',
-                                el: '//*[@id="ctl00_cp1_ddVisaType_DropDown"]/div/ul/li[4]',
-                                step: 2
+                                el: '//*[@id="ctl00_cp1_ddVisaType_DropDown"]/div/ul/li[4]'
                             },
                             {
                                 name: 'captcha',
                                 el: '//*[@id="c_pages_form_cp1_captcha1_CaptchaImage"]',
-                                elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]',
-                                step: 3
+                                elResult: '//*[@id="cp1_pnlCaptchaBotDetect"]/span/input[1]'
                             },
-                            // {
-                            //     name: 'click',
-                            //     el: '//*[@id="ctl00_cp1_btnNext_input"]',
-                            //     delay : 25000,
-                            //     step: 3
-                            // }
+                            {
+                                name: 'click',
+                                el: '//*[@id="ctl00_cp1_btnNext_input"]'
+                            },
                             {
                                 name: 'check',
                                 el: '//*[@id="cp1_lblNoDates"]',
-                                step: 4
+                                delay: 5000
                             },
                             {
                                 name: 'click',
                                 el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                                step: 4,
                                 delay: 60000
                             }
                         ]

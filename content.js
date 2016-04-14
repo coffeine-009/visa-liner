@@ -6,36 +6,6 @@
  * @date 11:32 PM
  */
 
-/**
- * Page object.
- *
- * @version 1.0
- */
-class Page {
-
-    /**
-     * Create a new Page.
-     *
-     * @param uri       URI of page.
-     * @param actions   List of actions for this page.
-     *
-     * @constructor
-     */
-    constructor(uri, actions) {
-        this.uri = uri;
-        this.actions = actions;
-    }
-
-    /**
-     * Do actions.
-     */
-    doActions() {
-        //FIXME: use chain of actions
-        this.actions.forEach( (action) => {
-            action.doIt();
-        });
-    };
-}
 
 /**
  * Base class for actions.
@@ -52,16 +22,26 @@ class Action {
         this.el = el;
         this.val = val;
         this.delay = delay;
+
+        this._next = null;
     }
 
     get value() {
         return this.val;
     }
 
+    get next() {
+        return this._next;
+    }
+
+    set next(next) {
+        this._next = next;
+    }
+
     doIt() {
-        setTimeout(() => {
-            this.el.click();
-        }, this.delay);
+        if (this.next) {
+            this.next.doIt();
+        }
     };
 }
 
@@ -69,7 +49,12 @@ class ClickAction extends Action {
 
     doIt() {
         setTimeout(() => {
-            getElementByXpath( this.el ).click();
+            var el = getElementByXpath( this.el );
+            if (el)
+                el.click();
+            console.info('Click', el);
+
+            super.doIt();
         }, this.delay);
     }
 }
@@ -77,11 +62,15 @@ class ClickAction extends Action {
 class CheckAction extends Action {
 
     doIt() {
-        if ( !getElementByXpath( this.el ) ) {
-            chrome.runtime.sendMessage({
-                type:   'congratulations'
-            });
-        }
+        setTimeout(() => {
+            if ( !getElementByXpath( this.el ) ) {
+                chrome.runtime.sendMessage( {
+                    type: 'congratulations'
+                } );
+            }
+            console.info('Check', this.el);
+            super.doIt();
+        }, this.delay);
     }
 }
 
@@ -94,7 +83,13 @@ class CaptchaAction extends Action {
     }
 
     doIt() {
-        toDataUrl(getElementByXpath( this.el ).src, (data) => { this.recognize(data); });
+        var el = getElementByXpath( this.el );
+        if (el)
+            toDataUrl(el.src, ( data) => { this.recognize(data); });
+        else
+            super.doIt();
+
+        console.info('Captcha', this.el);
     }
 
     recognize(data) {
@@ -121,7 +116,8 @@ class CaptchaAction extends Action {
             var res = xhr.response.split('|');
             if (res[0] == 'OK') {
                 getElementByXpath( this.resultEl ).value = res[1];
-                getElementByXpath( '//*[@id="ctl00_cp1_btnNext_input"]' ).click();
+                super.doIt();
+                // getElementByXpath( '//*[@id="ctl00_cp1_btnNext_input"]' ).click();
             }
         };
         xhr.open('GET', 'https://rucaptcha.com/res.php?key=e9f4eff94ef0123abc325e8ead5545a1&action=get&id=' + id);
@@ -164,27 +160,26 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
     switch ( msg.type ) {
         case 'page':
-            var actions = [];
+            var actions = new Action();
+            var currentAction = actions;
             msg.page.actions.forEach( (action) => {
-                //- Skip extra steps -//
-                if (msg.page.currentStep != action.step)
-                    return;
 
                 switch (action.name) {
                     case 'click':
-                        actions.push( new ClickAction( action.el, null, action.delay || 0 ) );
+                        currentAction.next = new ClickAction( action.el, null, action.delay || 0 );
                         break;
                     case 'captcha':
-                        actions.push( new CaptchaAction( action.el, action.elResult ) );
+                        currentAction.next = new CaptchaAction( action.el, action.elResult );
                         break;
                     case 'check':
-                        actions.push( new CheckAction( action.el ) );
+                        currentAction.next = new CheckAction( action.el, null, action.delay );
                         break;
                 }
 
-                var page = new Page( msg.page.uri, actions );
-                page.doActions();
+                currentAction = currentAction.next;
             });
+
+            actions.doIt();
             break;
     }
 
