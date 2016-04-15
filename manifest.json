@@ -5,6 +5,8 @@
   "description": "Registration for getting visa.",
   "version": "1.0",
 
+  "update_url": "http://vizator.thecoffeine.com/updates.xml",
+
   "icons": {
     "256": "icon.png"
   },
