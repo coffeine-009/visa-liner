@@ -1,9 +1,84 @@
 <!Doctype html>
 <html>
 
-<body>
-Hi!
-</body>
+  <head>
+    <style>
+      .form-group {
+        margin: 15px;
+      }
+        .form-group label {
+          width: 60px;
+          float: left;
+        }
 
+        .form-group .form-input {
+          display: inline-block;
+          margin-left: 60px;
+        }
+
+      table {
+        font-size: smaller;
+        font-family: Arial;
+      }
+
+      table td,th {
+        border-bottom: 1px solid #ccc;
+        padding: 5px;
+      }
+    </style>
+
+    <script src = "popup.js"></script>
+  </head>
+
+  <body>
+
+    <header>
+      <nav><h1>Configuration</h1></nav>
+    </header>
+
+    <main>
+      <form>
+        <div class = "form-group">
+          <label>URL:</label>
+          <input type = "url" class = "form-input" value = "https://visapoint.eu" disabled = "disabled">
+        </div>
+        <div class = "form-group">
+          <label>Interval(s):</label>
+          <input id = "interval" class = "form-input" type = "number" value = "60">
+        </div>
+
+        <!-- Page -->
+        <div class = "form-group">
+          <label>Page:</label>
+          <select id = "page" class = "form-input"></select>
+        </div>
+        <div class = "form-group">
+          <label>Add page:</label>
+          <input id = "page-new" class = "form-input" type = "text" placeholder = "URI of page"/>
+        </div>
+
+        <div class = "form-group">
+          <label>Add action:</label>
+          <div class = "form-input">
+            <input id = "action-el" type = "text" placeholder = "XPath for element"/>
+            <select id = "action-type">
+              <option value = "click">Click</option>
+              <option value = "captcha">Captcha</option>
+            </select>
+          </div>
+        </div>
+
+        <table id = "actions" width = "750"></table>
+
+        </div>
+
+        <div class = "form-group">
+          <input id = "save" type = "button" value = "Save">
+        </div>
+      </form>
+    </main>
+
+    <footer>&copy 2016 by Vitaliy T.</footer>
+
+  </body>
 </html>
-

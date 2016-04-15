@@ -5,11 +5,29 @@
   "description": "Registration for getting visa.",
   "version": "1.0",
 
+  "update_url": "http://vizator.thecoffeine.com/updates.xml",
+
+  "icons": {
+    "256": "icon.png"
+  },
+
   "background": {
     "scripts": [
       "background.js"
     ]
   },
+
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "matches": [
+        "https://visapoint.eu/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
 
   "browser_action": {
     "default_icon": "icon.png",
@@ -17,7 +35,10 @@
   },
   "permissions": [
     "webRequest",
-    "activeTab", 
-    "http://www.polandvisa-ukraine.com/"
+    "activeTab",
+    "notifications",
+    "storage",
+    "https://visapoint.eu/",
+    "https://rucaptcha.com/"
   ]
 }
