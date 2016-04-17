@@ -18,10 +18,11 @@ class Action {
      * @param el    DOM element.
      * @param val   Value.
      */
-    constructor(el, val, delay) {
+    constructor(el, val, delay, next) {
         this.el = el;
         this.val = val;
         this.delay = delay;
+        this.nextSubPage = next;
 
         this._next = null;
     }
@@ -45,6 +46,14 @@ class Action {
         if (this.next) {
             this.next.doIt();
         }
+
+        if (this.nextSubPage) {
+            chrome.runtime.sendMessage({
+                type:   'page.next',
+                //- Get uri -//
+                uri:    location.href.toString().split(window.location.host)[1]
+            });
+        }
     };
 }
 
@@ -65,6 +74,14 @@ class ClickAction extends Action {
                 el.click();
 
             super.doIt();
+
+            if (!this.nextSubPage) {
+                chrome.runtime.sendMessage({
+                    type:   'page.reset',
+                    //- Get uri -//
+                    uri:    location.href.toString().split(window.location.host)[1]
+                });
+            }
         }, this.delay);
     }
 }
@@ -201,7 +218,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
                 switch (action.name) {
                     case 'click':
-                        currentAction.next = new ClickAction( action.el, null, action.delay || 0 );
+                        currentAction.next = new ClickAction( action.el, null, action.delay || 0, action.next );
                         break;
                     case 'captcha':
                         currentAction.next = new CaptchaAction( action.el, action.elResult );
