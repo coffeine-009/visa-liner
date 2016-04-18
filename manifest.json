@@ -6,6 +6,7 @@
   "version": "1.0",
 
   "update_url": "http://vizator.thecoffeine.com/updates.xml",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrrNmrJ2HAwqNQAxYu5Sn6vkJgjwsidlYzHSUJzLZF9w17QU5jlEOJxSbk5QdQlMVY3VogIfIzND617+g1iYwESpnHiF4+Zy69ks+eOe8tHxnS5UOqMraSHWb/9ybC9Lf1EjBsl0Cf1hL/HX7/A3rY10/kSAx1/O6MhsuUgHkeruBYkSviAO4u2gFSRHfDnmTzKBao6EaYTNxiEeKdNo9huoLwG0yMxXIa45AbS7gn397Gi45+Z5lgMxMb+LbbFvVSo9xYdEwxeWC5vXy0MRq9T3CGEMIX7GTMph3+jKTwbi4jT2BjL0G6MebglQE3swqKazm/Cd9XtShDvbGCfQMQIDAQAB",
 
   "icons": {
     "256": "icon.png"

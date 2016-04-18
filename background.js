@@ -102,7 +102,7 @@ chrome.storage.sync.get('config', (items) => {
                                 {
                                     name: 'click',
                                     el: '//*[@id="ctl00_cp1_btnPrev_input"]',
-                                    delay: 3600,
+                                    delay: 3600000,
                                     next: 1
                                 }
                             ]
