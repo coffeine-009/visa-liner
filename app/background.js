@@ -190,9 +190,14 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
         case 'actions.next':
             // ...query for the active tab...
             chrome.tabs.query({
-                active: true,
+                url: '*://visapoint.eu/*',
                 currentWindow: true
             }, function ( tabs ) {
+
+                if (tabs.length == 0) {
+                    return;
+                }
+
                 // ...and send a request for the DOM info...
                 var page = config.pages[ msg.uri ];
                 chrome.tabs.sendMessage(

@@ -21,12 +21,14 @@ window.addEventListener('DOMContentLoaded', function () {
         }
 
         var interval = document.getElementById( 'interval' );
+        var citizenship = document.getElementById( 'citizenship' );
 
         interval.value = config.interval / 1000;
 
         document.getElementById( 'save' ).onclick = function() {
-            config.interval = interval.value * 1000;
-            config.pages[ '/form' ].pages[ 0 ].actions[ 9 ].delay = interval.value * 1000;
+
+            config.pages[ '/form' ].pages[ 0 ].actions[ 1 ].el = '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul/li[' + citizenship.value + ']';
+            console.log(config);
 
             // Enable the page-action for the requesting tab
             chrome.storage.sync.set({'config': JSON.stringify(config)}, function () {
