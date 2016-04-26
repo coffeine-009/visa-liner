@@ -233,6 +233,34 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
             actions.doIt();
             break;
+
+        case 'el.get':
+            var children = [];
+            var els = getElementByXpath( msg.el ).children;
+            for(let i = 0; i < els.length; i++) {
+                children.push(els[i].innerHTML);
+            }
+            chrome.runtime.sendMessage({
+                type:   'el.set',
+                destEl: msg.destEl,
+                html:   children
+            });
+            break;
+
+        case 'citizenship.select':
+            getElementByXpath( '//*[@id="ctl00_cp1_ddCitizenship_Arrow"]' ).click();
+            getElementByXpath( msg.el ).click();
+            break;
+
+        case 'embassy.select':
+            getElementByXpath( '//*[@id="ctl00_cp1_ddEmbassy_Arrow"]' ).click();
+            getElementByXpath( msg.el ).click();
+            break;
+
+        case 'visatype.select':
+            getElementByXpath( '//*[@id="ctl00_cp1_ddVisaType_Arrow"]' ).click();
+            getElementByXpath( msg.el ).click();
+            break;
     }
 });
 

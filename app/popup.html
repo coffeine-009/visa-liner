@@ -5,6 +5,7 @@
     <style>
       .form-group {
         margin: 15px;
+        width: 600px;
       }
         .form-group label {
           width: 60px;
@@ -42,9 +43,24 @@
           <label>URL:</label>
           <input type = "url" class = "form-input" value = "https://visapoint.eu" disabled = "disabled">
         </div>
+
         <div class = "form-group">
           <label>Interval(s):</label>
           <input id = "interval" class = "form-input" type = "number" value = "60">
+        </div>
+        <hr />
+
+        <div class = "form-group">
+          <label>Citizenship:</label>
+          <select id = "citizenship" class = "form-input"></select>
+        </div>
+        <div class = "form-group">
+          <label>Embassy:</label>
+          <select id = "embassy" class = "form-input"></select>
+        </div>
+        <div class = "form-group">
+          <label>Visatype:</label>
+          <select id = "visatype" class = "form-input"></select>
         </div>
 
         <div class = "form-group">

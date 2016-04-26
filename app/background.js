@@ -9,6 +9,7 @@
 
 //- Configuration -//
 var config = null;
+var isConfigured = false;
 
 /**
  * Entry point.
@@ -185,14 +186,22 @@ chrome.storage.sync.get('config', (items) => {
 
 chrome.runtime.onMessage.addListener(function (msg, sender, response) {
 
+    if (!isConfigured)
+        return;
+
     switch ( msg.type ) {
         //- Send next action to content script -//
         case 'actions.next':
             // ...query for the active tab...
             chrome.tabs.query({
-                active: true,
+                url: '*://visapoint.eu/*',
                 currentWindow: true
             }, function ( tabs ) {
+
+                if (tabs.length == 0) {
+                    return;
+                }
+
                 // ...and send a request for the DOM info...
                 var page = config.pages[ msg.uri ];
                 chrome.tabs.sendMessage(
@@ -226,5 +235,14 @@ chrome.runtime.onMessage.addListener(function (msg, sender, response) {
             var yourSound = new Audio('notification.mp3');
             yourSound.play();
             break;
+    }
+});
+
+chrome.extension.onMessage.addListener((msg) => {
+    switch (msg.type) {
+
+        case 'configured':
+            isConfigured = true;
+            break
     }
 });
