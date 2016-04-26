@@ -233,6 +233,15 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 
             actions.doIt();
             break;
+
+        case 'el.get':
+            var citizenship = [];
+            getElementByXpath( msg.el ).children;//TODO: make list of citizenship
+            chrome.runtime.sendMessage({
+                type:   'el.set',
+                html:   citizenship
+            });
+            break;
     }
 });
 

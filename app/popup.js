@@ -23,6 +23,21 @@ window.addEventListener('DOMContentLoaded', function () {
         var interval = document.getElementById( 'interval' );
         var citizenship = document.getElementById( 'citizenship' );
 
+        chrome.runtime.sendMessage({
+            type:   'el.get',
+            el:     '//*[@id="ctl00_cp1_ddCitizenship_DropDown"]/div/ul'
+        });
+
+        chrome.runtime.onMessage.addListener(function (msg, sender, response) {
+
+            switch ( msg.type ) {
+                case 'el.set':
+                    citizenship.innerHTML;
+                    //TODO
+                    break;
+            }
+        });
+
         interval.value = config.interval / 1000;
 
         document.getElementById( 'save' ).onclick = function() {
